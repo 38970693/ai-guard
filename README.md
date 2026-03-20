@@ -1,5 +1,7 @@
 # AI Guard
 
+**🌍 English | [中文](README.zh-CN.md) | [日本語](README.ja.md)**
+
 Multi-model AI code assistant for VS Code with hallucination prevention.
 
 <p align="center">
