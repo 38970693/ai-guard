@@ -2,8 +2,12 @@
   "name": "ai-guard",
   "displayName": "AI Guard",
   "description": "Multi-model AI code assistant with hallucination prevention: Generate + Review + Rule Check",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "publisher": "ai-guard",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/38970693/ai-guard.git"
+  },
   "engines": {
     "vscode": "^1.85.0"
   },
