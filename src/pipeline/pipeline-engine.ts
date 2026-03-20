@@ -8,7 +8,6 @@ import {
   PipelineEvent,
   PipelineStageStatus,
   StageOutcome,
-  Finding,
 } from './types';
 import { runGenerateStage } from './generate-stage';
 import { runReviewStage } from './review-stage';
@@ -27,8 +26,9 @@ export class PipelineEngine {
     const config = this.pipelineConfig();
     let generatedCode: string | null = null;
     let correctedCode: string | null = null;
+    let hasRuleErrors = false;
 
-    // === Stage 1: Generate ===
+    // === Stage 1: Generate (always first) ===
     this.eventEmitter.fire({
       stage: 'generate',
       status: PipelineStageStatus.Running,
@@ -51,70 +51,94 @@ export class PipelineEngine {
 
     generatedCode = genOutcome.output;
 
-    // === Stage 2: Review (optional) ===
-    if (config.autoReview) {
-      this.eventEmitter.fire({
-        stage: 'review',
-        status: PipelineStageStatus.Running,
-      });
-
-      const reviewOutcome = await runReviewStage(
-        this.modelRegistry.getProvider('review'),
-        request,
-        generatedCode
-      );
-      stages.push(reviewOutcome);
-      this.eventEmitter.fire({
-        stage: 'review',
-        status: reviewOutcome.status,
-        outcome: reviewOutcome,
-      });
-
-      if (reviewOutcome.reviewData?.correctedCode) {
-        correctedCode = reviewOutcome.reviewData.correctedCode;
+    // === Post-generate stages in configured order ===
+    for (const stage of config.stageOrder) {
+      if (stage === 'review') {
+        const reviewOutcome = await this.runReview(config, request, generatedCode, hasRuleErrors);
+        stages.push(reviewOutcome);
+        if (reviewOutcome.reviewData?.correctedCode) {
+          correctedCode = reviewOutcome.reviewData.correctedCode;
+        }
+      } else if (stage === 'ruleCheck') {
+        const ruleOutcome = await this.runRuleCheck(config, request, generatedCode);
+        stages.push(ruleOutcome);
+        if (ruleOutcome.findings.some((f) => f.severity === 'error')) {
+          hasRuleErrors = true;
+        }
       }
-    } else {
-      stages.push({
-        stage: 'review',
-        status: PipelineStageStatus.Skipped,
-        durationMs: 0,
-        findings: [],
-      });
     }
 
-    // === Stage 3: Rule Check (optional) ===
-    if (config.autoRuleCheck) {
-      this.eventEmitter.fire({
-        stage: 'ruleCheck',
-        status: PipelineStageStatus.Running,
-      });
-
-      const workspaceRoot =
-        vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? '';
-
-      const ruleOutcome = await runRuleCheckStage(
-        this.ruleEngine,
-        generatedCode,
-        request.language,
-        workspaceRoot,
-        request.filePath
-      );
-      stages.push(ruleOutcome);
-      this.eventEmitter.fire({
-        stage: 'ruleCheck',
-        status: ruleOutcome.status,
-        outcome: ruleOutcome,
-      });
-    } else {
-      stages.push({
-        stage: 'ruleCheck',
-        status: PipelineStageStatus.Skipped,
-        durationMs: 0,
-        findings: [],
-      });
+    // Ensure skipped stages are recorded
+    const ranStages = new Set(stages.map((s) => s.stage));
+    for (const name of ['review', 'ruleCheck'] as const) {
+      if (!ranStages.has(name)) {
+        stages.push({
+          stage: name,
+          status: PipelineStageStatus.Skipped,
+          durationMs: 0,
+          findings: [],
+        });
+      }
     }
 
     return this.buildResult(stages, generatedCode, correctedCode);
+  }
+
+  private async runReview(
+    config: PipelineConfig,
+    request: PipelineRequest,
+    generatedCode: string,
+    hasRuleErrors: boolean
+  ): Promise<StageOutcome & { reviewData?: { correctedCode?: string | null } }> {
+    if (!config.autoReview) {
+      return { stage: 'review', status: PipelineStageStatus.Skipped, durationMs: 0, findings: [] };
+    }
+
+    if (config.skipReviewOnError && hasRuleErrors) {
+      return {
+        stage: 'review',
+        status: PipelineStageStatus.Skipped,
+        durationMs: 0,
+        findings: [{
+          severity: 'info',
+          category: 'rule',
+          message: 'Review skipped: rule check found errors (skipReviewOnError is enabled)',
+        }],
+      };
+    }
+
+    this.eventEmitter.fire({ stage: 'review', status: PipelineStageStatus.Running });
+
+    const reviewOutcome = await runReviewStage(
+      this.modelRegistry.getProvider('review'),
+      request,
+      generatedCode
+    );
+    this.eventEmitter.fire({ stage: 'review', status: reviewOutcome.status, outcome: reviewOutcome });
+    return reviewOutcome;
+  }
+
+  private async runRuleCheck(
+    config: PipelineConfig,
+    request: PipelineRequest,
+    generatedCode: string
+  ): Promise<StageOutcome> {
+    if (!config.autoRuleCheck) {
+      return { stage: 'ruleCheck', status: PipelineStageStatus.Skipped, durationMs: 0, findings: [] };
+    }
+
+    this.eventEmitter.fire({ stage: 'ruleCheck', status: PipelineStageStatus.Running });
+
+    const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath ?? '';
+    const ruleOutcome = await runRuleCheckStage(
+      this.ruleEngine,
+      generatedCode,
+      request.language,
+      workspaceRoot,
+      request.filePath
+    );
+    this.eventEmitter.fire({ stage: 'ruleCheck', status: ruleOutcome.status, outcome: ruleOutcome });
+    return ruleOutcome;
   }
 
   private buildResult(

@@ -19,6 +19,18 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         ...event,
       });
     });
+
+    // Send updated stageOrder when config changes
+    vscode.workspace.onDidChangeConfiguration((e) => {
+      if (e.affectsConfiguration('aiGuard.pipeline.stageOrder')) {
+        this.sendStageOrder();
+      }
+    });
+  }
+
+  private sendStageOrder() {
+    const order = vscode.workspace.getConfiguration('aiGuard').get<string[]>('pipeline.stageOrder', ['ruleCheck', 'review']);
+    this.view?.webview.postMessage({ type: 'stageOrder', order });
   }
 
   resolveWebviewView(
@@ -37,6 +49,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
     webviewView.webview.html = '';
     webviewView.webview.html = this.getHtml(webviewView.webview);
+
+    // Send initial stageOrder
+    this.sendStageOrder();
 
     webviewView.webview.onDidReceiveMessage((msg) => {
       switch (msg.type) {
@@ -68,6 +83,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
           Promise.resolve(this.onFixFinding(msg.finding)).catch((err) => {
             this.view?.webview.postMessage({ type: 'fixError', error: String(err) });
           });
+          break;
+        case 'updateStageOrder':
+          vscode.workspace.getConfiguration('aiGuard').update(
+            'pipeline.stageOrder',
+            msg.order,
+            vscode.ConfigurationTarget.Global
+          );
           break;
       }
     });
@@ -103,7 +125,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
         <h2>AI Guard Pipeline</h2>
         <button id="settingsBtn" class="header-icon-btn" title="Settings">&#9881;</button>
       </div>
-      <p class="subtitle">Generate + Review + Rule Check</p>
+      <p class="subtitle" id="pipeline-subtitle">Generate + Rule Check + Review</p>
     </div>
 
     <div class="input-section">
@@ -127,25 +149,7 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 
       <div class="stage-arrow">&#x2193;</div>
 
-      <div class="stage-card" id="stage-review">
-        <div class="stage-header">
-          <span class="stage-icon" id="icon-review">2</span>
-          <span class="stage-name">Review</span>
-          <span class="stage-status" id="status-review">Idle</span>
-        </div>
-        <div class="stage-detail" id="detail-review"></div>
-      </div>
-
-      <div class="stage-arrow">&#x2193;</div>
-
-      <div class="stage-card" id="stage-ruleCheck">
-        <div class="stage-header">
-          <span class="stage-icon" id="icon-ruleCheck">3</span>
-          <span class="stage-name">Rule Check</span>
-          <span class="stage-status" id="status-ruleCheck">Idle</span>
-        </div>
-        <div class="stage-detail" id="detail-ruleCheck"></div>
-      </div>
+      <div id="post-generate-stages"></div>
     </div>
 
     <div class="findings-section" id="findings-section" style="display:none;">

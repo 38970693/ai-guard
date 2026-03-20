@@ -15,6 +15,13 @@ const stages: Record<string, StageState> = {
   ruleCheck: { status: 'Idle', detail: '' },
 };
 
+const stageLabels: Record<string, string> = {
+  review: 'Review',
+  ruleCheck: 'Rule Check',
+};
+
+let currentStageOrder: string[] = ['ruleCheck', 'review'];
+
 // --- DOM ---
 function $(id: string): HTMLElement {
   return document.getElementById(id)!;
@@ -53,6 +60,97 @@ function initUI() {
       $('runBtn').click();
     }
   });
+
+  // Initial render of post-generate stages
+  renderPostGenerateStages();
+}
+
+function renderPostGenerateStages() {
+  const container = $('post-generate-stages');
+  container.innerHTML = '';
+
+  // Update subtitle
+  const subtitleEl = $('pipeline-subtitle');
+  if (subtitleEl) {
+    const names = currentStageOrder.map((s) => stageLabels[s] || s);
+    subtitleEl.textContent = 'Generate + ' + names.join(' + ');
+  }
+
+  currentStageOrder.forEach((stageName, index) => {
+    // Arrow between stages
+    if (index > 0) {
+      const arrow = document.createElement('div');
+      arrow.className = 'stage-arrow';
+      arrow.innerHTML = '\u2193';
+      container.appendChild(arrow);
+    }
+
+    const card = document.createElement('div');
+    card.className = 'stage-card';
+    card.id = `stage-${stageName}`;
+
+    const header = document.createElement('div');
+    header.className = 'stage-header';
+
+    const icon = document.createElement('span');
+    icon.className = 'stage-icon';
+    icon.id = `icon-${stageName}`;
+    icon.textContent = String(index + 2);
+
+    const name = document.createElement('span');
+    name.className = 'stage-name';
+    name.textContent = stageLabels[stageName] || stageName;
+
+    const status = document.createElement('span');
+    status.className = 'stage-status';
+    status.id = `status-${stageName}`;
+    status.textContent = stages[stageName]?.status || 'Idle';
+
+    // Reorder buttons
+    const reorderBtns = document.createElement('span');
+    reorderBtns.className = 'stage-reorder-btns';
+
+    if (index > 0) {
+      const upBtn = document.createElement('button');
+      upBtn.className = 'stage-reorder-btn';
+      upBtn.innerHTML = '\u25B2';
+      upBtn.title = 'Move up';
+      upBtn.addEventListener('click', () => moveStage(index, index - 1));
+      reorderBtns.appendChild(upBtn);
+    }
+
+    if (index < currentStageOrder.length - 1) {
+      const downBtn = document.createElement('button');
+      downBtn.className = 'stage-reorder-btn';
+      downBtn.innerHTML = '\u25BC';
+      downBtn.title = 'Move down';
+      downBtn.addEventListener('click', () => moveStage(index, index + 1));
+      reorderBtns.appendChild(downBtn);
+    }
+
+    header.appendChild(icon);
+    header.appendChild(name);
+    header.appendChild(reorderBtns);
+    header.appendChild(status);
+
+    const detail = document.createElement('div');
+    detail.className = 'stage-detail';
+    detail.id = `detail-${stageName}`;
+
+    card.appendChild(header);
+    card.appendChild(detail);
+    container.appendChild(card);
+
+    // Re-apply current stage state
+    updateStageUI(stageName);
+  });
+}
+
+function moveStage(fromIndex: number, toIndex: number) {
+  const item = currentStageOrder.splice(fromIndex, 1)[0];
+  currentStageOrder.splice(toIndex, 0, item);
+  vscode.postMessage({ type: 'updateStageOrder', order: [...currentStageOrder] });
+  renderPostGenerateStages();
 }
 
 function resetStages() {
@@ -67,10 +165,13 @@ function resetStages() {
 
 function updateStageUI(stage: string) {
   const state = stages[stage];
-  const statusEl = $(`status-${stage}`);
-  const iconEl = $(`icon-${stage}`);
-  const detailEl = $(`detail-${stage}`);
-  const card = $(`stage-${stage}`);
+  const statusEl = document.getElementById(`status-${stage}`);
+  const iconEl = document.getElementById(`icon-${stage}`);
+  const detailEl = document.getElementById(`detail-${stage}`);
+  const card = document.getElementById(`stage-${stage}`);
+
+  // Elements may not exist yet if stageOrder hasn't been rendered
+  if (!statusEl || !iconEl || !detailEl || !card) return;
 
   statusEl.textContent = state.status;
   if (state.duration) {
@@ -161,10 +262,15 @@ function updateStageUI(stage: string) {
       iconEl.textContent = '\u2014';
       card.classList.add('stage-skipped');
       break;
-    default:
-      const num = stage === 'generate' ? '1' : stage === 'review' ? '2' : '3';
+    default: {
+      let num = '1';
+      if (stage !== 'generate') {
+        const idx = currentStageOrder.indexOf(stage);
+        num = idx >= 0 ? String(idx + 2) : '?';
+      }
       iconEl.textContent = num;
       break;
+    }
   }
 }
 
@@ -366,6 +472,11 @@ window.addEventListener('message', (event) => {
       $('result-section').style.display = 'block';
       errorBadge.className = 'result-badge result-rejected';
       errorBadge.textContent = `\u274C Fix failed: ${msg.error}`;
+      break;
+    }
+    case 'stageOrder': {
+      currentStageOrder = msg.order;
+      renderPostGenerateStages();
       break;
     }
   }

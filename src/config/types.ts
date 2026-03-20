@@ -15,10 +15,14 @@ export interface RuleConfig {
   enableSecurityPatterns: boolean;
 }
 
+export type PostGenerateStage = 'review' | 'ruleCheck';
+
 export interface PipelineConfig {
   autoReview: boolean;
   autoRuleCheck: boolean;
   showDiffOnIssues: boolean;
+  stageOrder: PostGenerateStage[];
+  skipReviewOnError: boolean;
 }
 
 export interface AiGuardConfig {

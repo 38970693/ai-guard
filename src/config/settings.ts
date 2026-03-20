@@ -46,6 +46,8 @@ export class SettingsManager implements vscode.Disposable {
       autoReview: this.config.get<boolean>('pipeline.autoReview', true),
       autoRuleCheck: this.config.get<boolean>('pipeline.autoRuleCheck', true),
       showDiffOnIssues: this.config.get<boolean>('pipeline.showDiffOnIssues', true),
+      stageOrder: this.config.get<('review' | 'ruleCheck')[]>('pipeline.stageOrder', ['ruleCheck', 'review']),
+      skipReviewOnError: this.config.get<boolean>('pipeline.skipReviewOnError', true),
     };
   }
 

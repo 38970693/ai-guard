@@ -167,6 +167,20 @@
           "type": "boolean",
           "default": true,
           "description": "Automatically show diff view when issues are found"
+        },
+        "aiGuard.pipeline.stageOrder": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["review", "ruleCheck"]
+          },
+          "default": ["ruleCheck", "review"],
+          "description": "Order of post-generation stages. Default: ruleCheck first (saves tokens by catching errors before AI review)"
+        },
+        "aiGuard.pipeline.skipReviewOnError": {
+          "type": "boolean",
+          "default": true,
+          "description": "Skip AI review when rule check finds errors (saves tokens). Only effective when ruleCheck runs before review."
         }
       }
     },

@@ -78,7 +78,7 @@ export class EslintRule implements Rule {
         eslint = new ESLint({
           overrideConfigFile: true,
           overrideConfig: {
-            rules: DEFAULT_RULES,
+            rules: DEFAULT_RULES as any,
             languageOptions: {
               ecmaVersion: 'latest',
               sourceType: 'module',
