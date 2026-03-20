@@ -1,16 +1,20 @@
 # AI Guard
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![VS Code](https://img.shields.io/badge/VS%20Code-%3E%3D1.85.0-blue.svg)](https://code.visualstudio.com/)
+[![Version](https://img.shields.io/badge/version-0.2.0-green.svg)](https://github.com/38970693/ai-guard/releases)
+
 **🌍 English | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Español](README.es.md) | [Português](README.pt.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [العربية](README.ar.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md) | [ภาษาไทย](README.th.md) | [Tiếng Việt](README.vi.md)**
 
 **Let AIs find each other's mistakes.** — Multi-model AI code assistant for VS Code with hallucination prevention.
 
 <p align="center">
-  <img src="media/team.jpg" width="500" alt="AI Guard 开发现实">
+  <img src="media/team.jpg" width="500" alt="AI Guard - Real development scene">
   <br>
-  <em>真实的开发现场：我在坑里写代码，AI们在旁边审查 😂</em>
+  <em>Real dev scene: me coding in the trenches, AIs reviewing from the sidelines</em>
 </p>
 
-> **欢迎大家魔改，做大做强，再创辉煌！** Fork it, hack it, make it yours!
+> **Fork it, hack it, make it yours!** Contributions welcome!
 
 ## Overview
 
@@ -25,8 +29,10 @@ By using different models for generation and review, AI Guard catches hallucinat
 ## Features
 
 - **Multi-model pipeline** — Use any OpenAI-compatible models for generation and review
-- **Built-in rules** — Import validation, syntax checking, security pattern detection
+- **Multi-agent review** — Configure multiple review agents to run in parallel for broader coverage
+- **ESLint integration** — Static analysis via ESLint (uses workspace config or sensible defaults)
 - **Custom rules** — Extend with your own rules via `.ai-guard/rules/`
+- **Configurable stage order** — Reorder pipeline stages; optionally skip review when rule check finds errors (saves tokens)
 - **Diff view** — Visual comparison when the review model suggests changes
 - **Sidebar UI** — Dedicated panel showing pipeline results and status
 - **Configurable** — Full control over models, endpoints, and pipeline behavior
@@ -69,10 +75,11 @@ AI Guard supports any OpenAI-compatible API endpoint. Configure via VS Code sett
 | Setting | Default | Description |
 |---------|---------|-------------|
 | `aiGuard.rules.enableBuiltIn` | `true` | Enable built-in rules |
-| `aiGuard.rules.enableImportValidation` | `true` | Check if imports exist |
-| `aiGuard.rules.enableSyntaxCheck` | `true` | Validate syntax |
-| `aiGuard.rules.enableSecurityPatterns` | `true` | Detect security issues |
+| `aiGuard.rules.enableEslint` | `true` | Use ESLint for static analysis |
 | `aiGuard.rules.customRulesPath` | `.ai-guard/rules` | Custom rules directory |
+| `aiGuard.rules.enableImportValidation` | `false` | (Legacy) Check if imports exist |
+| `aiGuard.rules.enableSyntaxCheck` | `false` | (Legacy) Validate syntax |
+| `aiGuard.rules.enableSecurityPatterns` | `false` | (Legacy) Detect security issues |
 
 ### Pipeline
 
@@ -81,6 +88,30 @@ AI Guard supports any OpenAI-compatible API endpoint. Configure via VS Code sett
 | `aiGuard.pipeline.autoReview` | `true` | Auto-run review after generation |
 | `aiGuard.pipeline.autoRuleCheck` | `true` | Auto-run rules after generation |
 | `aiGuard.pipeline.showDiffOnIssues` | `true` | Show diff when issues found |
+| `aiGuard.pipeline.stageOrder` | `["ruleCheck", "review"]` | Order of post-generation stages |
+| `aiGuard.pipeline.skipReviewOnError` | `true` | Skip AI review when rule check finds errors (saves tokens) |
+
+### Multi-Agent Review
+
+You can configure multiple review agents to run in parallel. When set, this overrides the single `reviewModel`:
+
+```json
+{
+  "aiGuard.reviewAgents": [
+    {
+      "name": "Claude",
+      "endpoint": "https://api.anthropic.com/v1",
+      "model": "claude-sonnet-4-20250514",
+      "apiKey": "your-key"
+    },
+    {
+      "name": "DeepSeek",
+      "endpoint": "https://api.deepseek.com/v1",
+      "model": "deepseek-chat",
+      "apiKey": "your-key"
+    }
+  ]
+}
 
 ## Custom Rules
 
@@ -126,6 +157,10 @@ src/
 └── ui/                   # Sidebar, status bar, settings panel
 ```
 
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
 ## License
 
-MIT
+[MIT](LICENSE)

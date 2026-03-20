@@ -10,7 +10,7 @@ We welcome contributions! Here's how to get started.
 4. **Make your changes** and test them
 5. **Commit** with a clear message
 6. **Push** to your fork: `git push origin feature/my-feature`
-7. **Open a Pull Request** against the `master` branch
+7. **Open a Pull Request** against the `main` branch
 
 ## Development Setup
 
