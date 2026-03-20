@@ -2,6 +2,14 @@
 
 Multi-model AI code assistant for VS Code with hallucination prevention.
 
+<p align="center">
+  <img src="media/team.jpg" width="500" alt="AI Guard 开发现实">
+  <br>
+  <em>真实的开发现场：我在坑里写代码，AI们在旁边审查 😂</em>
+</p>
+
+> **欢迎大家魔改，做大做强，再创辉煌！** Fork it, hack it, make it yours!
+
 ## Overview
 
 AI Guard uses a three-stage pipeline to generate safer, more reliable AI-assisted code:
