@@ -1,0 +1,9 @@
+out/
+media/webview.js
+media/webview.js.map
+node_modules/
+*.vsix
+.vscode-test/
+.vscode/settings.json
+.env
+*.key

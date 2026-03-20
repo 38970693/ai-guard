@@ -1,0 +1,178 @@
+{
+  "name": "ai-guard",
+  "displayName": "AI Guard",
+  "description": "Multi-model AI code assistant with hallucination prevention: Generate + Review + Rule Check",
+  "version": "0.1.0",
+  "publisher": "ai-guard",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Machine Learning",
+    "Programming Languages"
+  ],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "scripts": {
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js",
+    "package": "vsce package"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "aiGuard.generate",
+        "title": "AI Guard: Generate Code",
+        "icon": "$(sparkle)"
+      },
+      {
+        "command": "aiGuard.review",
+        "title": "AI Guard: Review Selection",
+        "icon": "$(eye)"
+      },
+      {
+        "command": "aiGuard.runPipeline",
+        "title": "AI Guard: Run Full Pipeline (Generate + Review + Rule Check)",
+        "icon": "$(play)"
+      },
+      {
+        "command": "aiGuard.showDiff",
+        "title": "AI Guard: Show Review Diff",
+        "icon": "$(diff)"
+      },
+      {
+        "command": "aiGuard.configureModels",
+        "title": "AI Guard: Configure Models",
+        "icon": "$(gear)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ai-guard-sidebar",
+          "title": "AI Guard",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "ai-guard-sidebar": [
+        {
+          "type": "webview",
+          "id": "aiGuard.pipelineView",
+          "name": "Pipeline"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "AI Guard",
+      "properties": {
+        "aiGuard.productionModel.endpoint": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "API endpoint for production model (OpenAI-compatible)"
+        },
+        "aiGuard.productionModel.model": {
+          "type": "string",
+          "default": "gpt-4o",
+          "description": "Model name for code generation"
+        },
+        "aiGuard.productionModel.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API key for production model"
+        },
+        "aiGuard.productionModel.maxTokens": {
+          "type": "number",
+          "default": 4096,
+          "description": "Max tokens for production model response"
+        },
+        "aiGuard.productionModel.temperature": {
+          "type": "number",
+          "default": 0.2,
+          "description": "Temperature for production model"
+        },
+        "aiGuard.reviewModel.endpoint": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "API endpoint for review model (OpenAI-compatible)"
+        },
+        "aiGuard.reviewModel.model": {
+          "type": "string",
+          "default": "claude-sonnet-4-20250514",
+          "description": "Model name for code review"
+        },
+        "aiGuard.reviewModel.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "API key for review model"
+        },
+        "aiGuard.reviewModel.maxTokens": {
+          "type": "number",
+          "default": 4096,
+          "description": "Max tokens for review model response"
+        },
+        "aiGuard.reviewModel.temperature": {
+          "type": "number",
+          "default": 0.1,
+          "description": "Temperature for review model (lower = more precise)"
+        },
+        "aiGuard.rules.enableBuiltIn": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable built-in hallucination detection rules"
+        },
+        "aiGuard.rules.customRulesPath": {
+          "type": "string",
+          "default": ".ai-guard/rules",
+          "description": "Path to custom rules directory (relative to workspace root)"
+        },
+        "aiGuard.rules.enableImportValidation": {
+          "type": "boolean",
+          "default": true,
+          "description": "Check if imported modules actually exist"
+        },
+        "aiGuard.rules.enableSyntaxCheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "Verify generated code has no syntax errors"
+        },
+        "aiGuard.rules.enableSecurityPatterns": {
+          "type": "boolean",
+          "default": true,
+          "description": "Detect potential security issues in generated code"
+        },
+        "aiGuard.pipeline.autoReview": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically run review model after generation"
+        },
+        "aiGuard.pipeline.autoRuleCheck": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically run rule checks after generation"
+        },
+        "aiGuard.pipeline.showDiffOnIssues": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically show diff view when issues are found"
+        }
+      }
+    },
+    "keybindings": [
+      {
+        "command": "aiGuard.runPipeline",
+        "key": "ctrl+shift+g",
+        "mac": "cmd+shift+g"
+      }
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "esbuild": "^0.21.0",
+    "typescript": "^5.5.0"
+  }
+}
