@@ -2,7 +2,7 @@
 
 **🌍 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Español](README.es.md) | [Português](README.pt.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [العربية](README.ar.md) | Italiano | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md) | [ภาษาไทย](README.th.md) | [Tiếng Việt](README.vi.md)**
 
-Assistente di codice IA multi-modello per VS Code con prevenzione delle allucinazioni.
+**Lascia che le IA trovino gli errori a vicenda.** — Assistente di codice IA multi-modello per VS Code con prevenzione delle allucinazioni.
 
 <p align="center">
   <img src="media/team.jpg" width="500" alt="Realtà dello sviluppo AI Guard">
