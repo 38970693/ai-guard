@@ -1,6 +1,7 @@
 import * as path from 'path';
 import { SettingsManager } from '../config';
 import { Rule, RuleContext, RuleResult } from './types';
+import { EslintRule } from './built-in/eslint-rule';
 import { ImportValidationRule } from './built-in/import-validation';
 import { SyntaxCheckRule } from './built-in/syntax-check';
 import { SecurityPatternsRule } from './built-in/security-patterns';
@@ -19,6 +20,12 @@ export class RuleEngine {
 
     this.builtInRules = [];
 
+    if (config.enableEslint) {
+      // ESLint covers syntax, security, and best practices for JS/TS
+      this.builtInRules.push(new EslintRule());
+    }
+
+    // Legacy rules — still available if users prefer them or for non-JS languages
     if (config.enableImportValidation) {
       this.builtInRules.push(new ImportValidationRule());
     }

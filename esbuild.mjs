@@ -7,7 +7,7 @@ const extensionConfig = {
   entryPoints: ['src/extension.ts'],
   bundle: true,
   outfile: 'out/extension.js',
-  external: ['vscode'],
+  external: ['vscode', 'eslint'],
   format: 'cjs',
   platform: 'node',
   target: 'node18',

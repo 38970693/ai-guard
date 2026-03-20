@@ -9,6 +9,7 @@ export interface ModelConfig {
 export interface RuleConfig {
   enableBuiltIn: boolean;
   customRulesPath: string;
+  enableEslint: boolean;
   enableImportValidation: boolean;
   enableSyntaxCheck: boolean;
   enableSecurityPatterns: boolean;

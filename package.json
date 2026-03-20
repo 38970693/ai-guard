@@ -133,20 +133,25 @@
           "default": ".ai-guard/rules",
           "description": "Path to custom rules directory (relative to workspace root)"
         },
-        "aiGuard.rules.enableImportValidation": {
+        "aiGuard.rules.enableEslint": {
           "type": "boolean",
           "default": true,
-          "description": "Check if imported modules actually exist"
+          "description": "Use ESLint for static analysis (syntax, security, best practices). Uses workspace ESLint config if available, otherwise falls back to sensible defaults."
+        },
+        "aiGuard.rules.enableImportValidation": {
+          "type": "boolean",
+          "default": false,
+          "description": "(Legacy) Check if imported modules actually exist"
         },
         "aiGuard.rules.enableSyntaxCheck": {
           "type": "boolean",
-          "default": true,
-          "description": "Verify generated code has no syntax errors"
+          "default": false,
+          "description": "(Legacy) Verify generated code has no syntax errors"
         },
         "aiGuard.rules.enableSecurityPatterns": {
           "type": "boolean",
-          "default": true,
-          "description": "Detect potential security issues in generated code"
+          "default": false,
+          "description": "(Legacy) Detect potential security issues in generated code"
         },
         "aiGuard.pipeline.autoReview": {
           "type": "boolean",
@@ -172,6 +177,9 @@
         "mac": "cmd+shift+g"
       }
     ]
+  },
+  "dependencies": {
+    "eslint": "^9.0.0"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

@@ -34,9 +34,10 @@ export class SettingsManager implements vscode.Disposable {
     return {
       enableBuiltIn: this.config.get<boolean>('rules.enableBuiltIn', true),
       customRulesPath: this.config.get<string>('rules.customRulesPath', '.ai-guard/rules'),
-      enableImportValidation: this.config.get<boolean>('rules.enableImportValidation', true),
-      enableSyntaxCheck: this.config.get<boolean>('rules.enableSyntaxCheck', true),
-      enableSecurityPatterns: this.config.get<boolean>('rules.enableSecurityPatterns', true),
+      enableEslint: this.config.get<boolean>('rules.enableEslint', true),
+      enableImportValidation: this.config.get<boolean>('rules.enableImportValidation', false),
+      enableSyntaxCheck: this.config.get<boolean>('rules.enableSyntaxCheck', false),
+      enableSecurityPatterns: this.config.get<boolean>('rules.enableSecurityPatterns', false),
     };
   }
 
