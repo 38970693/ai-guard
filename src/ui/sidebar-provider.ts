@@ -20,10 +20,13 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
       });
     });
 
-    // Send updated stageOrder when config changes
+    // Send updated stageOrder and model info when config changes
     vscode.workspace.onDidChangeConfiguration((e) => {
       if (e.affectsConfiguration('aiGuard.pipeline.stageOrder')) {
         this.sendStageOrder();
+      }
+      if (e.affectsConfiguration('aiGuard.productionModel') || e.affectsConfiguration('aiGuard.reviewModel') || e.affectsConfiguration('aiGuard.reviewAgents')) {
+        this.sendModelInfo();
       }
     });
   }
@@ -31,6 +34,33 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
   private sendStageOrder() {
     const order = vscode.workspace.getConfiguration('aiGuard').get<string[]>('pipeline.stageOrder', ['ruleCheck', 'review']);
     this.view?.webview.postMessage({ type: 'stageOrder', order });
+  }
+
+  private sendModelInfo() {
+    const config = vscode.workspace.getConfiguration('aiGuard');
+    const prodModel = config.get<string>('productionModel.model', 'gpt-4o');
+
+    // Check for multi-agent config
+    const reviewAgents = config.get<any[]>('reviewAgents', []);
+    const enabledAgents = reviewAgents.filter((a: any) => a.enabled !== false);
+
+    if (enabledAgents.length > 0) {
+      this.view?.webview.postMessage({
+        type: 'modelInfo',
+        generate: { model: prodModel },
+        reviewAgents: enabledAgents.map((a: any) => ({
+          name: a.name,
+          model: a.model,
+        })),
+      });
+    } else {
+      const reviewModel = config.get<string>('reviewModel.model', 'claude-sonnet-4-20250514');
+      this.view?.webview.postMessage({
+        type: 'modelInfo',
+        generate: { model: prodModel },
+        reviewAgents: [{ name: 'Review', model: reviewModel }],
+      });
+    }
   }
 
   resolveWebviewView(
@@ -50,8 +80,9 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     webviewView.webview.html = '';
     webviewView.webview.html = this.getHtml(webviewView.webview);
 
-    // Send initial stageOrder
+    // Send initial stageOrder and model info
     this.sendStageOrder();
+    this.sendModelInfo();
 
     webviewView.webview.onDidReceiveMessage((msg) => {
       switch (msg.type) {
@@ -106,7 +137,6 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
     const styleUri = webview.asWebviewUri(
       vscode.Uri.joinPath(this.extensionUri, 'media', 'main.css')
     );
-
     const nonce = getNonce();
 
     return `<!DOCTYPE html>
@@ -120,19 +150,29 @@ export class SidebarProvider implements vscode.WebviewViewProvider {
 </head>
 <body>
   <div id="app">
-    <div class="header">
-      <div class="header-top">
-        <h2>AI Guard Pipeline</h2>
-        <button id="settingsBtn" class="header-icon-btn" title="Settings">&#9881;</button>
-      </div>
-      <p class="subtitle" id="pipeline-subtitle">Generate + Rule Check + Review</p>
+    <!-- Top Toolbar -->
+    <div class="top-toolbar">
+      <button id="settingsBtn" class="icon-btn" title="Settings">
+        <svg width="18" height="18" viewBox="0 0 16 16" fill="currentColor"><path d="M9.1 4.4L8.6 2H7.4L6.9 4.4L6.2 4.7L4.2 3.4L3.4 4.2L4.7 6.2L4.4 6.9L2 7.4V8.6L4.4 9.1L4.7 9.8L3.4 11.8L4.2 12.6L6.2 11.3L6.9 11.6L7.4 14H8.6L9.1 11.6L9.8 11.3L11.8 12.6L12.6 11.8L11.3 9.8L11.6 9.1L14 8.6V7.4L11.6 6.9L11.3 6.2L12.6 4.2L11.8 3.4L9.8 4.7L9.1 4.4ZM8 10C6.9 10 6 9.1 6 8C6 6.9 6.9 6 8 6C9.1 6 10 6.9 10 8C10 9.1 9.1 10 8 10Z"/></svg>
+      </button>
     </div>
 
+    <!-- Input Section -->
     <div class="input-section">
-      <textarea id="promptInput" placeholder="Describe the code you want to generate..." rows="4"></textarea>
-      <div class="button-row">
-        <button id="runBtn" class="primary-btn">
-          &#9654; Run Pipeline
+      <textarea id="promptInput" placeholder="Describe the code you want to generate..." rows="3"></textarea>
+      <div class="input-footer">
+        <div class="model-tags" id="model-tags">
+          <span class="model-tag model-tag-generate" id="tag-generate" title="Generation Model">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M5 3l6 5-6 5V3z"/></svg>
+            <span id="tag-generate-name">--</span>
+          </span>
+          <span class="model-tag model-tag-review" title="Review Model">
+            <svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1C4.1 1 1 3.6 1 7c0 1.8.8 3.4 2.2 4.5L2 15l4-2.5c.6.1 1.3.2 2 .2 3.9 0 7-2.6 7-6S11.9 1 8 1z"/></svg>
+            <span id="tag-review-name">--</span>
+          </span>
+        </div>
+        <button id="runBtn" class="submit-btn" title="Run Pipeline (Ctrl+Enter)">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M2 2l12 6-12 6V2z"/></svg>
         </button>
       </div>
     </div>

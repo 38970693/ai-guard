@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { AiGuardConfig, ModelConfig, RuleConfig, PipelineConfig } from './types';
+import { AiGuardConfig, ModelConfig, ReviewAgentConfig, RuleConfig, PipelineConfig } from './types';
 
 export class SettingsManager implements vscode.Disposable {
   private disposables: vscode.Disposable[] = [];
@@ -74,10 +74,25 @@ export class SettingsManager implements vscode.Disposable {
     };
   }
 
+  getReviewAgents(): ReviewAgentConfig[] {
+    const agents = this.config.get<ReviewAgentConfig[]>('reviewAgents', []);
+    if (agents.length > 0) {
+      return agents;
+    }
+    // Backward compat: wrap single reviewModel as an agent
+    const legacy = this.getModelConfig('reviewModel');
+    return [{
+      ...legacy,
+      name: 'Review Agent 1',
+      enabled: true,
+    }];
+  }
+
   getFullConfig(): AiGuardConfig {
     return {
       productionModel: this.getModelConfig('productionModel'),
       reviewModel: this.getModelConfig('reviewModel'),
+      reviewAgents: this.getReviewAgents(),
       rules: this.getRuleConfig(),
       pipeline: this.getPipelineConfig(),
     };

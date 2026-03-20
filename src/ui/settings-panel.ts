@@ -343,6 +343,73 @@ export class SettingsPanel {
       width: auto;
       min-width: 160px;
     }
+
+    /* Review Agent Cards */
+    .agent-card {
+      border: 1px solid var(--vscode-panel-border);
+      border-radius: 6px;
+      padding: 12px;
+      margin-bottom: 12px;
+      background: color-mix(in srgb, var(--vscode-editor-background) 95%, var(--vscode-badge-background));
+    }
+    .agent-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .agent-card-header .agent-name-input {
+      font-weight: 600;
+      font-size: 13px;
+      border: none;
+      background: transparent;
+      color: var(--vscode-foreground);
+      flex: 1;
+      padding: 2px 4px;
+    }
+    .agent-card-header .agent-name-input:focus {
+      outline: none;
+      border-bottom: 1px solid var(--vscode-focusBorder);
+    }
+    .agent-toggle-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .agent-toggle-label {
+      font-size: 11px;
+      color: var(--vscode-descriptionForeground);
+    }
+    .agent-remove-btn {
+      padding: 2px 8px;
+      font-size: 11px;
+      background: transparent;
+      color: var(--vscode-editorError-foreground);
+      border: 1px solid var(--vscode-editorError-foreground);
+      border-radius: 3px;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+    .agent-remove-btn:hover {
+      opacity: 1;
+      background: color-mix(in srgb, var(--vscode-editorError-foreground) 10%, transparent);
+    }
+    .add-agent-btn {
+      width: 100%;
+      padding: 8px;
+      background: transparent;
+      color: var(--vscode-button-background);
+      border: 1px dashed var(--vscode-button-background);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      opacity: 0.8;
+      transition: opacity 0.15s, background 0.15s;
+    }
+    .add-agent-btn:hover {
+      opacity: 1;
+      background: color-mix(in srgb, var(--vscode-button-background) 8%, transparent);
+    }
   </style>
 </head>
 <body>
@@ -443,97 +510,18 @@ export class SettingsPanel {
     </div>
   </div>
 
-  <!-- Review Model -->
+  <!-- Review Agents (Multi-Agent) -->
   <div class="section">
     <div class="section-header">
-      <h2>Stage 2 &mdash; Review</h2>
-      <span class="badge">Review Model</span>
+      <h2>Stage 2 &mdash; Review Agents</h2>
+      <span class="badge" id="agent-count-badge">0 agents</span>
     </div>
     <div class="section-body">
-      <div class="field">
-        <label>Preset</label>
-        <select id="review-preset" class="preset-select">
-          <option value="">Custom</option>
-          <optgroup label="OpenAI">
-            <option value="openai-gpt4o">GPT-4o</option>
-            <option value="openai-gpt4o-mini">GPT-4o Mini</option>
-            <option value="openai-o3">o3</option>
-            <option value="openai-o4-mini">o4-mini</option>
-          </optgroup>
-          <optgroup label="Anthropic">
-            <option value="claude-opus">Claude Opus 4</option>
-            <option value="claude-sonnet">Claude Sonnet 4</option>
-            <option value="claude-haiku">Claude Haiku 3.5</option>
-          </optgroup>
-          <optgroup label="Google">
-            <option value="gemini-pro">Gemini 2.5 Pro</option>
-            <option value="gemini-flash">Gemini 2.5 Flash</option>
-          </optgroup>
-          <optgroup label="DeepSeek">
-            <option value="deepseek-v3">DeepSeek V3</option>
-            <option value="deepseek-r1">DeepSeek R1</option>
-          </optgroup>
-          <optgroup label="Mistral">
-            <option value="mistral-large">Mistral Large</option>
-            <option value="mistral-codestral">Codestral</option>
-          </optgroup>
-          <optgroup label="xAI">
-            <option value="xai-grok">Grok 3</option>
-          </optgroup>
-          <optgroup label="Alibaba">
-            <option value="qwen-max">Qwen Max</option>
-            <option value="qwen-coder">Qwen Coder</option>
-          </optgroup>
-          <optgroup label="Meta (via Groq)">
-            <option value="groq-llama">Llama 3.3 70B</option>
-          </optgroup>
-          <optgroup label="MiniMax">
-            <option value="minimax-text">MiniMax-Text-01</option>
-            <option value="minimax-m1">MiniMax-M1</option>
-          </optgroup>
-          <optgroup label="Moonshot (Kimi)">
-            <option value="kimi-k2">Kimi K2</option>
-            <option value="kimi-moonshot">Moonshot-v1-128k</option>
-          </optgroup>
-          <optgroup label="Xiaomi (MiMo)">
-            <option value="mimo-7b">MiMo-7B</option>
-          </optgroup>
-          <optgroup label="Cohere">
-            <option value="cohere-command">Command R+</option>
-          </optgroup>
-          <optgroup label="Local">
-            <option value="ollama">Ollama</option>
-            <option value="lmstudio">LM Studio</option>
-          </optgroup>
-        </select>
-      </div>
-      <div class="field">
-        <label>API Endpoint</label>
-        <input type="text" id="review-endpoint" placeholder="https://api.openai.com/v1">
-      </div>
-      <div class="field">
-        <label>Model Name</label>
-        <input type="text" id="review-model" placeholder="claude-sonnet-4-20250514">
-      </div>
-      <div class="field">
-        <label>API Key</label>
-        <div class="api-key-row">
-          <input type="password" id="review-apiKey" placeholder="sk-...">
-          <button class="toggle-btn" data-target="review-apiKey">Show</button>
-          <button class="test-btn" data-role="reviewModel">Test</button>
-        </div>
-        <div class="test-result" id="test-reviewModel"></div>
-      </div>
-      <div class="row">
-        <div class="field">
-          <label>Max Tokens</label>
-          <input type="number" id="review-maxTokens" min="1" max="128000" value="4096">
-        </div>
-        <div class="field">
-          <label>Temperature <span class="hint">(0-2, lower = stricter review)</span></label>
-          <input type="number" id="review-temperature" min="0" max="2" step="0.1" value="0.1">
-        </div>
-      </div>
+      <p style="font-size: 11px; color: var(--vscode-descriptionForeground); margin-bottom: 12px;">
+        Configure one or more review agents. All enabled agents run in parallel and their findings are merged.
+      </p>
+      <div id="review-agents-container"></div>
+      <button class="add-agent-btn" id="addAgentBtn">+ Add Review Agent</button>
     </div>
   </div>
 
@@ -652,22 +640,22 @@ export class SettingsPanel {
 
     function $(id) { return document.getElementById(id); }
 
-    // Preset handlers
-    function setupPreset(prefix) {
-      $(prefix + '-preset').addEventListener('change', (e) => {
-        const p = PRESETS[e.target.value];
-        if (p) {
-          $(prefix + '-endpoint').value = p.endpoint;
-          $(prefix + '-model').value = p.model;
-        }
-      });
-    }
-    setupPreset('prod');
-    setupPreset('review');
+    let reviewAgents = [];
+    let agentIdCounter = 0;
 
-    // Show/hide API key
-    document.querySelectorAll('.toggle-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+    // Preset handlers for production model
+    $('prod-preset').addEventListener('change', (e) => {
+      const p = PRESETS[e.target.value];
+      if (p) {
+        $('prod-endpoint').value = p.endpoint;
+        $('prod-model').value = p.model;
+      }
+    });
+
+    // Show/hide API key (delegated)
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.toggle-btn');
+      if (btn) {
         const input = $(btn.dataset.target);
         if (input.type === 'password') {
           input.type = 'text';
@@ -676,25 +664,203 @@ export class SettingsPanel {
           input.type = 'password';
           btn.textContent = 'Show';
         }
-      });
+      }
     });
 
     // Test connection
-    document.querySelectorAll('.test-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.test-btn');
+      if (btn) {
         const role = btn.dataset.role;
-        // Save first so the extension reads fresh values
         saveSettings();
         btn.textContent = 'Testing...';
         btn.disabled = true;
         vscode.postMessage({ type: 'testConnection', role });
-      });
+      }
     });
 
     // Save
     $('saveBtn').addEventListener('click', saveSettings);
 
+    // === Review Agents Management ===
+
+    function getPresetOptions() {
+      let html = '<option value="">Custom</option>';
+      const groups = {
+        'OpenAI': ['openai-gpt4o', 'openai-gpt4o-mini', 'openai-o3', 'openai-o4-mini'],
+        'Anthropic': ['claude-opus', 'claude-sonnet', 'claude-haiku'],
+        'Google': ['gemini-pro', 'gemini-flash'],
+        'DeepSeek': ['deepseek-v3', 'deepseek-r1'],
+        'Mistral': ['mistral-large', 'mistral-codestral'],
+        'xAI': ['xai-grok'],
+        'Alibaba': ['qwen-max', 'qwen-coder'],
+        'Meta (via Groq)': ['groq-llama'],
+        'MiniMax': ['minimax-text', 'minimax-m1'],
+        'Moonshot (Kimi)': ['kimi-k2', 'kimi-moonshot'],
+        'Xiaomi (MiMo)': ['mimo-7b'],
+        'Cohere': ['cohere-command'],
+        'Local': ['ollama', 'lmstudio'],
+      };
+      const labels = {
+        'openai-gpt4o': 'GPT-4o', 'openai-gpt4o-mini': 'GPT-4o Mini', 'openai-o3': 'o3', 'openai-o4-mini': 'o4-mini',
+        'claude-opus': 'Claude Opus 4', 'claude-sonnet': 'Claude Sonnet 4', 'claude-haiku': 'Claude Haiku 3.5',
+        'gemini-pro': 'Gemini 2.5 Pro', 'gemini-flash': 'Gemini 2.5 Flash',
+        'deepseek-v3': 'DeepSeek V3', 'deepseek-r1': 'DeepSeek R1',
+        'mistral-large': 'Mistral Large', 'mistral-codestral': 'Codestral',
+        'xai-grok': 'Grok 3',
+        'qwen-max': 'Qwen Max', 'qwen-coder': 'Qwen Coder',
+        'groq-llama': 'Llama 3.3 70B',
+        'minimax-text': 'MiniMax-Text-01', 'minimax-m1': 'MiniMax-M1',
+        'kimi-k2': 'Kimi K2', 'kimi-moonshot': 'Moonshot-v1-128k',
+        'mimo-7b': 'MiMo-7B', 'cohere-command': 'Command R+',
+        'ollama': 'Ollama', 'lmstudio': 'LM Studio',
+      };
+      for (const [group, keys] of Object.entries(groups)) {
+        html += '<optgroup label="' + group + '">';
+        for (const k of keys) html += '<option value="' + k + '">' + (labels[k] || k) + '</option>';
+        html += '</optgroup>';
+      }
+      return html;
+    }
+
+    function addAgentCard(agent) {
+      const id = agentIdCounter++;
+      agent._id = id;
+      reviewAgents.push(agent);
+      renderAgents();
+      return id;
+    }
+
+    function removeAgent(id) {
+      reviewAgents = reviewAgents.filter(a => a._id !== id);
+      renderAgents();
+    }
+
+    function renderAgents() {
+      const container = $('review-agents-container');
+      container.innerHTML = '';
+      $('agent-count-badge').textContent = reviewAgents.filter(a => a.enabled !== false).length + ' agent(s)';
+
+      reviewAgents.forEach((agent) => {
+        const card = document.createElement('div');
+        card.className = 'agent-card';
+        card.dataset.agentId = agent._id;
+        card.innerHTML =
+          '<div class="agent-card-header">' +
+            '<input class="agent-name-input" value="' + escapeAttr(agent.name || '') + '" placeholder="Agent name..." data-field="name">' +
+            '<div class="agent-toggle-row">' +
+              '<label class="agent-toggle-label">Enabled</label>' +
+              '<input type="checkbox" class="agent-enabled-cb" ' + (agent.enabled !== false ? 'checked' : '') + '>' +
+              '<button class="agent-remove-btn" title="Remove agent">&times;</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="field">' +
+            '<label>Preset</label>' +
+            '<select class="preset-select agent-preset">' + getPresetOptions() + '</select>' +
+          '</div>' +
+          '<div class="field">' +
+            '<label>API Endpoint</label>' +
+            '<input type="text" class="agent-endpoint" value="' + escapeAttr(agent.endpoint || '') + '" placeholder="https://api.openai.com/v1">' +
+          '</div>' +
+          '<div class="field">' +
+            '<label>Model Name</label>' +
+            '<input type="text" class="agent-model" value="' + escapeAttr(agent.model || '') + '" placeholder="model-name">' +
+          '</div>' +
+          '<div class="field">' +
+            '<label>API Key</label>' +
+            '<div class="api-key-row">' +
+              '<input type="password" class="agent-apiKey" value="' + escapeAttr(agent.apiKey || '') + '" placeholder="sk-...">' +
+              '<button class="toggle-btn" data-target="">Show</button>' +
+            '</div>' +
+          '</div>' +
+          '<div class="row">' +
+            '<div class="field"><label>Max Tokens</label><input type="number" class="agent-maxTokens" min="1" max="128000" value="' + (agent.maxTokens || 4096) + '"></div>' +
+            '<div class="field"><label>Temperature</label><input type="number" class="agent-temperature" min="0" max="2" step="0.1" value="' + (agent.temperature ?? 0.1) + '"></div>' +
+          '</div>';
+
+        // Wire up preset select
+        const presetSelect = card.querySelector('.agent-preset');
+        detectAgentPreset(presetSelect, agent.endpoint, agent.model);
+        presetSelect.addEventListener('change', (e) => {
+          const p = PRESETS[e.target.value];
+          if (p) {
+            card.querySelector('.agent-endpoint').value = p.endpoint;
+            card.querySelector('.agent-model').value = p.model;
+          }
+        });
+
+        // Wire up toggle-btn for this card's apiKey
+        const toggleBtn = card.querySelector('.toggle-btn');
+        const apiKeyInput = card.querySelector('.agent-apiKey');
+        toggleBtn.addEventListener('click', () => {
+          if (apiKeyInput.type === 'password') {
+            apiKeyInput.type = 'text';
+            toggleBtn.textContent = 'Hide';
+          } else {
+            apiKeyInput.type = 'password';
+            toggleBtn.textContent = 'Show';
+          }
+        });
+
+        // Wire up remove
+        card.querySelector('.agent-remove-btn').addEventListener('click', () => removeAgent(agent._id));
+
+        container.appendChild(card);
+      });
+    }
+
+    function detectAgentPreset(select, endpoint, model) {
+      for (const [key, p] of Object.entries(PRESETS)) {
+        if (p.endpoint === endpoint && p.model === model) {
+          select.value = key;
+          return;
+        }
+      }
+      for (const [key, p] of Object.entries(PRESETS)) {
+        if (p.endpoint === endpoint) {
+          select.value = key;
+          return;
+        }
+      }
+      select.value = '';
+    }
+
+    function escapeAttr(s) {
+      return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+    }
+
+    function collectAgents() {
+      const cards = document.querySelectorAll('.agent-card');
+      const agents = [];
+      cards.forEach(card => {
+        agents.push({
+          name: card.querySelector('.agent-name-input').value.trim() || 'Unnamed Agent',
+          endpoint: card.querySelector('.agent-endpoint').value.trim(),
+          model: card.querySelector('.agent-model').value.trim(),
+          apiKey: card.querySelector('.agent-apiKey').value,
+          maxTokens: parseInt(card.querySelector('.agent-maxTokens').value) || 4096,
+          temperature: parseFloat(card.querySelector('.agent-temperature').value) ?? 0.1,
+          enabled: card.querySelector('.agent-enabled-cb').checked,
+        });
+      });
+      return agents;
+    }
+
+    // Add agent button
+    $('addAgentBtn').addEventListener('click', () => {
+      addAgentCard({
+        name: 'Review Agent ' + (reviewAgents.length + 1),
+        endpoint: 'https://api.openai.com/v1',
+        model: '',
+        apiKey: '',
+        maxTokens: 4096,
+        temperature: 0.1,
+        enabled: true,
+      });
+    });
+
     function saveSettings() {
+      const agents = collectAgents();
       const config = {
         'productionModel.endpoint':   $('prod-endpoint').value,
         'productionModel.model':      $('prod-model').value,
@@ -702,11 +868,14 @@ export class SettingsPanel {
         'productionModel.maxTokens':  parseInt($('prod-maxTokens').value) || 4096,
         'productionModel.temperature': parseFloat($('prod-temperature').value) || 0.2,
 
-        'reviewModel.endpoint':   $('review-endpoint').value,
-        'reviewModel.model':      $('review-model').value,
-        'reviewModel.apiKey':     $('review-apiKey').value,
-        'reviewModel.maxTokens':  parseInt($('review-maxTokens').value) || 4096,
-        'reviewModel.temperature': parseFloat($('review-temperature').value) || 0.1,
+        'reviewAgents': agents,
+
+        // Also keep reviewModel synced with first agent for backward compat
+        'reviewModel.endpoint':   agents[0]?.endpoint || '',
+        'reviewModel.model':      agents[0]?.model || '',
+        'reviewModel.apiKey':     agents[0]?.apiKey || '',
+        'reviewModel.maxTokens':  agents[0]?.maxTokens || 4096,
+        'reviewModel.temperature': agents[0]?.temperature ?? 0.1,
 
         'pipeline.autoReview':       $('pipeline-autoReview').checked,
         'pipeline.autoRuleCheck':    $('pipeline-autoRuleCheck').checked,
@@ -720,24 +889,6 @@ export class SettingsPanel {
       vscode.postMessage({ type: 'saveSettings', config });
     }
 
-    // Detect current preset from endpoint+model
-    function detectPreset(prefix, endpoint, model) {
-      for (const [key, p] of Object.entries(PRESETS)) {
-        if (p.endpoint === endpoint && p.model === model) {
-          $(prefix + '-preset').value = key;
-          return;
-        }
-      }
-      // Partial match on endpoint only
-      for (const [key, p] of Object.entries(PRESETS)) {
-        if (p.endpoint === endpoint) {
-          $(prefix + '-preset').value = key;
-          return;
-        }
-      }
-      $(prefix + '-preset').value = '';
-    }
-
     // Load settings from extension
     window.addEventListener('message', (event) => {
       const msg = event.data;
@@ -748,14 +899,33 @@ export class SettingsPanel {
         $('prod-apiKey').value      = c.productionModel.apiKey;
         $('prod-maxTokens').value   = c.productionModel.maxTokens;
         $('prod-temperature').value = c.productionModel.temperature;
-        detectPreset('prod', c.productionModel.endpoint, c.productionModel.model);
 
-        $('review-endpoint').value    = c.reviewModel.endpoint;
-        $('review-model').value       = c.reviewModel.model;
-        $('review-apiKey').value      = c.reviewModel.apiKey;
-        $('review-maxTokens').value   = c.reviewModel.maxTokens;
-        $('review-temperature').value = c.reviewModel.temperature;
-        detectPreset('review', c.reviewModel.endpoint, c.reviewModel.model);
+        // Detect production preset
+        for (const [key, p] of Object.entries(PRESETS)) {
+          if (p.endpoint === c.productionModel.endpoint && p.model === c.productionModel.model) {
+            $('prod-preset').value = key;
+            break;
+          }
+        }
+
+        // Load review agents
+        reviewAgents = [];
+        agentIdCounter = 0;
+        const agents = c.reviewAgents || [];
+        if (agents.length > 0) {
+          agents.forEach(a => addAgentCard(a));
+        } else {
+          // Backward compat: create one agent from reviewModel
+          addAgentCard({
+            name: 'Review Agent 1',
+            endpoint: c.reviewModel.endpoint,
+            model: c.reviewModel.model,
+            apiKey: c.reviewModel.apiKey,
+            maxTokens: c.reviewModel.maxTokens,
+            temperature: c.reviewModel.temperature,
+            enabled: true,
+          });
+        }
 
         $('pipeline-autoReview').checked       = c.pipeline.autoReview;
         $('pipeline-autoRuleCheck').checked    = c.pipeline.autoRuleCheck;
@@ -771,8 +941,10 @@ export class SettingsPanel {
         const el = $('test-' + msg.role);
         const btn = document.querySelector('.test-btn[data-role="' + msg.role + '"]');
         if (btn) { btn.textContent = 'Test'; btn.disabled = false; }
-        el.textContent = msg.message;
-        el.className = 'test-result ' + (msg.success ? 'success' : 'error');
+        if (el) {
+          el.textContent = msg.message;
+          el.className = 'test-result ' + (msg.success ? 'success' : 'error');
+        }
       }
     });
   </script>

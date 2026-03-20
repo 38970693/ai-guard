@@ -6,6 +6,11 @@ export interface ModelConfig {
   temperature: number;
 }
 
+export interface ReviewAgentConfig extends ModelConfig {
+  name: string;
+  enabled: boolean;
+}
+
 export interface RuleConfig {
   enableBuiltIn: boolean;
   customRulesPath: string;
@@ -28,6 +33,7 @@ export interface PipelineConfig {
 export interface AiGuardConfig {
   productionModel: ModelConfig;
   reviewModel: ModelConfig;
+  reviewAgents: ReviewAgentConfig[];
   rules: RuleConfig;
   pipeline: PipelineConfig;
 }

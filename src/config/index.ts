@@ -1,2 +1,2 @@
 export { SettingsManager } from './settings';
-export type { AiGuardConfig, ModelConfig, RuleConfig, PipelineConfig } from './types';
+export type { AiGuardConfig, ModelConfig, ReviewAgentConfig, RuleConfig, PipelineConfig } from './types';

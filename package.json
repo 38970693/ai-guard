@@ -123,6 +123,24 @@
           "default": 0.1,
           "description": "Temperature for review model (lower = more precise)"
         },
+        "aiGuard.reviewAgents": {
+          "type": "array",
+          "default": [],
+          "description": "Multiple review agents. When set, overrides reviewModel. Each agent runs in parallel during review stage.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": { "type": "string", "description": "Display name for the agent" },
+              "endpoint": { "type": "string", "description": "API endpoint (OpenAI-compatible)" },
+              "model": { "type": "string", "description": "Model name" },
+              "apiKey": { "type": "string", "description": "API key" },
+              "maxTokens": { "type": "number", "default": 4096 },
+              "temperature": { "type": "number", "default": 0.1 },
+              "enabled": { "type": "boolean", "default": true }
+            },
+            "required": ["name", "endpoint", "model", "apiKey"]
+          }
+        },
         "aiGuard.rules.enableBuiltIn": {
           "type": "boolean",
           "default": true,
@@ -172,9 +190,15 @@
           "type": "array",
           "items": {
             "type": "string",
-            "enum": ["review", "ruleCheck"]
+            "enum": [
+              "review",
+              "ruleCheck"
+            ]
           },
-          "default": ["ruleCheck", "review"],
+          "default": [
+            "ruleCheck",
+            "review"
+          ],
           "description": "Order of post-generation stages. Default: ruleCheck first (saves tokens by catching errors before AI review)"
         },
         "aiGuard.pipeline.skipReviewOnError": {
@@ -193,6 +217,7 @@
     ]
   },
   "dependencies": {
+    "@vscode/codicons": "^0.0.45",
     "eslint": "^9.0.0"
   },
   "devDependencies": {

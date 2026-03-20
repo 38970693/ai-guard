@@ -479,8 +479,59 @@ window.addEventListener('message', (event) => {
       renderPostGenerateStages();
       break;
     }
+    case 'modelInfo': {
+      updateModelTags(msg.generate, msg.reviewAgents ?? [{ name: 'Review', model: msg.review?.model ?? '--' }]);
+      break;
+    }
   }
 });
+
+/** Shorten model name for display in tags */
+function shortenModelName(model: string): string {
+  // Map common model IDs to short display names
+  const shortNames: Record<string, string> = {
+    'gpt-4o': 'GPT-4o',
+    'gpt-4o-mini': 'GPT-4o Mini',
+    'o3': 'o3',
+    'o4-mini': 'o4-mini',
+    'claude-opus-4-20250514': 'Claude Opus',
+    'claude-sonnet-4-20250514': 'Claude Sonnet',
+    'claude-haiku-3-5-20241022': 'Claude Haiku',
+    'gemini-2.5-pro': 'Gemini Pro',
+    'gemini-2.5-flash': 'Gemini Flash',
+    'deepseek-chat': 'DeepSeek V3',
+    'deepseek-reasoner': 'DeepSeek R1',
+    'mistral-large-latest': 'Mistral Large',
+    'codestral-latest': 'Codestral',
+    'grok-3': 'Grok 3',
+    'qwen-max': 'Qwen Max',
+    'qwen-coder-plus': 'Qwen Coder',
+    'llama-3.3-70b-versatile': 'Llama 3.3',
+    'MiniMax-Text-01': 'MiniMax Text',
+    'MiniMax-M1': 'MiniMax M1',
+  };
+  return shortNames[model] || model;
+}
+
+function updateModelTags(generate: { model: string }, reviewAgents: { name: string; model: string }[]) {
+  const genName = document.getElementById('tag-generate-name');
+  if (genName) genName.textContent = shortenModelName(generate.model);
+
+  // Remove old review tags
+  const container = document.getElementById('model-tags');
+  if (!container) return;
+  container.querySelectorAll('.model-tag-review').forEach((el) => el.remove());
+
+  // Add a tag for each review agent
+  const reviewSvg = '<svg width="12" height="12" viewBox="0 0 16 16" fill="currentColor"><path d="M8 1C4.1 1 1 3.6 1 7c0 1.8.8 3.4 2.2 4.5L2 15l4-2.5c.6.1 1.3.2 2 .2 3.9 0 7-2.6 7-6S11.9 1 8 1z"/></svg>';
+  for (const agent of reviewAgents) {
+    const tag = document.createElement('span');
+    tag.className = 'model-tag model-tag-review';
+    tag.title = agent.name;
+    tag.innerHTML = `${reviewSvg}<span>${shortenModelName(agent.model)}</span>`;
+    container.appendChild(tag);
+  }
+}
 
 // --- Init ---
 let _initialized = false;

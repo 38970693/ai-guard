@@ -109,13 +109,69 @@ export class PipelineEngine {
 
     this.eventEmitter.fire({ stage: 'review', status: PipelineStageStatus.Running });
 
-    const reviewOutcome = await runReviewStage(
-      this.modelRegistry.getProvider('review'),
-      request,
-      generatedCode
+    const reviewProviders = this.modelRegistry.getReviewProviders();
+
+    if (reviewProviders.length <= 1) {
+      // Single agent — original behavior
+      const reviewOutcome = await runReviewStage(
+        this.modelRegistry.getProvider('review'),
+        request,
+        generatedCode
+      );
+      this.eventEmitter.fire({ stage: 'review', status: reviewOutcome.status, outcome: reviewOutcome });
+      return reviewOutcome;
+    }
+
+    // Multiple agents — run in parallel, merge findings
+    const start = Date.now();
+    const results = await Promise.allSettled(
+      reviewProviders.map((rp) =>
+        runReviewStage(rp.provider, request, generatedCode)
+          .then((outcome) => ({ name: rp.name, outcome }))
+      )
     );
-    this.eventEmitter.fire({ stage: 'review', status: reviewOutcome.status, outcome: reviewOutcome });
-    return reviewOutcome;
+
+    const mergedFindings: import('./types').Finding[] = [];
+    let correctedCode: string | null = null;
+    const agentSummaries: string[] = [];
+
+    for (const r of results) {
+      if (r.status === 'fulfilled') {
+        const { name, outcome } = r.value;
+        // Prefix findings with agent name
+        for (const f of outcome.findings) {
+          mergedFindings.push({
+            ...f,
+            message: `[${name}] ${f.message}`,
+          });
+        }
+        if (outcome.reviewData?.correctedCode && !correctedCode) {
+          correctedCode = outcome.reviewData.correctedCode;
+        }
+        agentSummaries.push(`${name}: ${outcome.output ?? outcome.status}`);
+      } else {
+        agentSummaries.push(`Agent failed: ${r.reason}`);
+      }
+    }
+
+    const hasErrors = mergedFindings.some((f) => f.severity === 'error');
+    const hasWarnings = mergedFindings.some((f) => f.severity === 'warning');
+
+    const mergedOutcome: StageOutcome & { reviewData?: { correctedCode?: string | null } } = {
+      stage: 'review',
+      status: hasErrors
+        ? PipelineStageStatus.Failed
+        : hasWarnings
+        ? PipelineStageStatus.Warning
+        : PipelineStageStatus.Passed,
+      durationMs: Date.now() - start,
+      output: agentSummaries.join('\n'),
+      findings: mergedFindings,
+      reviewData: { correctedCode },
+    };
+
+    this.eventEmitter.fire({ stage: 'review', status: mergedOutcome.status, outcome: mergedOutcome });
+    return mergedOutcome;
   }
 
   private async runRuleCheck(
