@@ -11,9 +11,32 @@ export class SettingsManager implements vscode.Disposable {
       vscode.workspace.onDidChangeConfiguration((e) => {
         if (e.affectsConfiguration('aiGuard')) {
           this._onDidChange.fire();
+          this.checkStageOrderWarning();
         }
       })
     );
+  }
+
+  private checkStageOrderWarning() {
+    const config = this.getPipelineConfig();
+    if (!config.skipReviewOnError) return;
+
+    const reviewIdx = config.stageOrder.indexOf('review');
+    const ruleCheckIdx = config.stageOrder.indexOf('ruleCheck');
+    if (reviewIdx >= 0 && ruleCheckIdx >= 0 && reviewIdx < ruleCheckIdx) {
+      vscode.window.showWarningMessage(
+        'AI Guard: "skipReviewOnError" is enabled but Review runs before Rule Check. ' +
+        'Move Rule Check before Review for this setting to take effect, or disable skipReviewOnError.',
+        'Move Rule Check First',
+        'Disable skipReviewOnError'
+      ).then((choice) => {
+        if (choice === 'Move Rule Check First') {
+          this.config.update('pipeline.stageOrder', ['ruleCheck', 'review'], vscode.ConfigurationTarget.Global);
+        } else if (choice === 'Disable skipReviewOnError') {
+          this.config.update('pipeline.skipReviewOnError', false, vscode.ConfigurationTarget.Global);
+        }
+      });
+    }
   }
 
   private get config(): vscode.WorkspaceConfiguration {
