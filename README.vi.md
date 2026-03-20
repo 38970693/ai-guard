@@ -2,7 +2,7 @@
 
 **🌍 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Español](README.es.md) | [Português](README.pt.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [العربية](README.ar.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md) | [ภาษาไทย](README.th.md) | Tiếng Việt**
 
-Trợ lý code AI đa mô hình cho VS Code với tính năng ngăn chặn ảo giác.
+**Để AI bắt lỗi lẫn nhau.** — Trợ lý code AI đa mô hình cho VS Code với tính năng ngăn chặn ảo giác.
 
 <p align="center">
   <img src="media/team.jpg" width="500" alt="Thực tế phát triển AI Guard">

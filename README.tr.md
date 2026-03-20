@@ -2,7 +2,7 @@
 
 **🌍 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Español](README.es.md) | [Português](README.pt.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [العربية](README.ar.md) | [Italiano](README.it.md) | Türkçe | [हिन्दी](README.hi.md) | [ภาษาไทย](README.th.md) | [Tiếng Việt](README.vi.md)**
 
-VS Code için çok modelli yapay zeka kod asistanı — halüsinasyon önleme özellikli.
+**Yapay zekaların birbirinin hatalarını bulmasını sağla.** — VS Code için çok modelli yapay zeka kod asistanı — halüsinasyon önleme özellikli.
 
 <p align="center">
   <img src="media/team.jpg" width="500" alt="AI Guard Geliştirme Gerçeği">

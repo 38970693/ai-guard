@@ -2,7 +2,7 @@
 
 **🌍 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Español](README.es.md) | [Português](README.pt.md) | 한국어 | [Русский](README.ru.md) | [العربية](README.ar.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md) | [ภาษาไทย](README.th.md) | [Tiếng Việt](README.vi.md)**
 
-VS Code용 멀티모델 AI 코드 어시스턴트 — 할루시네이션 방지 기능 내장.
+**AI끼리 서로 「트집잡기」를 시키자.** — VS Code용 멀티모델 AI 코드 어시스턴트 — 할루시네이션 방지 기능 내장.
 
 <p align="center">
   <img src="media/team.jpg" width="500" alt="AI Guard 개발 현실">

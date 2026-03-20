@@ -2,7 +2,7 @@
 
 **🌍 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Español](README.es.md) | [Português](README.pt.md) | [한국어](README.ko.md) | Русский | [العربية](README.ar.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md) | [ภาษาไทย](README.th.md) | [Tiếng Việt](README.vi.md)**
 
-Мультимодельный ИИ-ассистент для VS Code с предотвращением галлюцинаций.
+**Пусть ИИ ищут ошибки друг у друга.** — Мультимодельный ИИ-ассистент для VS Code с предотвращением галлюцинаций.
 
 <p align="center">
   <img src="media/team.jpg" width="500" alt="Реальность разработки AI Guard">

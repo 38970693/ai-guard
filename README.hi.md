@@ -2,7 +2,7 @@
 
 **🌍 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Español](README.es.md) | [Português](README.pt.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [العربية](README.ar.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | हिन्दी | [ภาษาไทย](README.th.md) | [Tiếng Việt](README.vi.md)**
 
-VS Code के लिए मल्टी-मॉडल AI कोड असिस्टेंट — हैलुसिनेशन रोकथाम के साथ।
+**AI को एक-दूसरे की गलतियाँ खोजने दो।** — VS Code के लिए मल्टी-मॉडल AI कोड असिस्टेंट — हैलुसिनेशन रोकथाम के साथ।
 
 <p align="center">
   <img src="media/team.jpg" width="500" alt="AI Guard विकास की वास्तविकता">

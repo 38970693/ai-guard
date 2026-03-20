@@ -2,7 +2,7 @@
 
 **🌍 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Español](README.es.md) | [Português](README.pt.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [العربية](README.ar.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md) | ภาษาไทย | [Tiếng Việt](README.vi.md)**
 
-ผู้ช่วยเขียนโค้ด AI หลายโมเดลสำหรับ VS Code พร้อมระบบป้องกัน Hallucination
+**ให้ AI จับผิดกันเอง** — ผู้ช่วยเขียนโค้ด AI หลายโมเดลสำหรับ VS Code พร้อมระบบป้องกัน Hallucination
 
 <p align="center">
   <img src="media/team.jpg" width="500" alt="ความจริงของการพัฒนา AI Guard">

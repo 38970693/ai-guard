@@ -2,7 +2,7 @@
 
 **🌍 English | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Español](README.es.md) | [Português](README.pt.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | [العربية](README.ar.md) | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md) | [ภาษาไทย](README.th.md) | [Tiếng Việt](README.vi.md)**
 
-Multi-model AI code assistant for VS Code with hallucination prevention.
+**Let AIs find each other's mistakes.** — Multi-model AI code assistant for VS Code with hallucination prevention.
 
 <p align="center">
   <img src="media/team.jpg" width="500" alt="AI Guard 开发现实">

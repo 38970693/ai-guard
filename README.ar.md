@@ -2,7 +2,7 @@
 
 **🌍 [English](README.md) | [中文](README.zh-CN.md) | [日本語](README.ja.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Español](README.es.md) | [Português](README.pt.md) | [한국어](README.ko.md) | [Русский](README.ru.md) | العربية | [Italiano](README.it.md) | [Türkçe](README.tr.md) | [हिन्दी](README.hi.md) | [ภาษาไทย](README.th.md) | [Tiếng Việt](README.vi.md)**
 
-مساعد برمجة ذكاء اصطناعي متعدد النماذج لـ VS Code مع منع الهلوسة.
+**دع الذكاء الاصطناعي يكتشف أخطاء بعضه البعض.** — مساعد برمجة ذكاء اصطناعي متعدد النماذج لـ VS Code مع منع الهلوسة.
 
 <p align="center">
   <img src="media/team.jpg" width="500" alt="واقع تطوير AI Guard">
