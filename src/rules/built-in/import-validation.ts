@@ -65,10 +65,15 @@ export class ImportValidationRule implements Rule {
     const lines = code.split('\n');
 
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
+      const line = lines[i].trim();
 
-      // ES6 imports: import ... from 'module'
-      const esMatch = line.match(/import\s+.*\s+from\s+['"]([^'"]+)['"]/);
+      // Skip comments and empty lines
+      if (!line || line.startsWith('//') || line.startsWith('/*') || line.startsWith('*') || line.startsWith('#')) {
+        continue;
+      }
+
+      // ES6 imports: import ... from 'module' (must start with import keyword)
+      const esMatch = line.match(/^import\s+.*\s+from\s+['"]([^'"]+)['"]/);
       if (esMatch) {
         results.push({
           module: esMatch[1],
@@ -78,15 +83,29 @@ export class ImportValidationRule implements Rule {
         continue;
       }
 
-      // require(): const x = require('module')
-      const reqMatch = line.match(/require\s*\(\s*['"]([^'"]+)['"]\s*\)/);
-      if (reqMatch) {
+      // Side-effect imports: import 'module' (must start with import keyword)
+      const sideEffectMatch = line.match(/^import\s+['"]([^'"]+)['"]/);
+      if (sideEffectMatch) {
         results.push({
-          module: reqMatch[1],
+          module: sideEffectMatch[1],
           line: i + 1,
-          isRelative: reqMatch[1].startsWith('.'),
+          isRelative: sideEffectMatch[1].startsWith('.'),
         });
         continue;
+      }
+
+      // require(): must be a statement, not inside a string
+      // Match patterns like: const x = require('module'), require('module'), module.exports = require('module')
+      if (line.match(/^(?:const|let|var|module\.exports)\s.*require\s*\(/) || line.match(/^require\s*\(/)) {
+        const reqMatch = line.match(/require\s*\(\s*['"]([^'"]+)['"]\s*\)/);
+        if (reqMatch) {
+          results.push({
+            module: reqMatch[1],
+            line: i + 1,
+            isRelative: reqMatch[1].startsWith('.'),
+          });
+          continue;
+        }
       }
 
       // Python imports: import module / from module import ...
