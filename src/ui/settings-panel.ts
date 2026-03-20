@@ -393,6 +393,17 @@ export class SettingsPanel {
           <optgroup label="Meta (via Groq)">
             <option value="groq-llama">Llama 3.3 70B</option>
           </optgroup>
+          <optgroup label="MiniMax">
+            <option value="minimax-text">MiniMax-Text-01</option>
+            <option value="minimax-m1">MiniMax-M1</option>
+          </optgroup>
+          <optgroup label="Moonshot (Kimi)">
+            <option value="kimi-k2">Kimi K2</option>
+            <option value="kimi-moonshot">Moonshot-v1-128k</option>
+          </optgroup>
+          <optgroup label="Xiaomi (MiMo)">
+            <option value="mimo-7b">MiMo-7B</option>
+          </optgroup>
           <optgroup label="Cohere">
             <option value="cohere-command">Command R+</option>
           </optgroup>
@@ -475,6 +486,17 @@ export class SettingsPanel {
           </optgroup>
           <optgroup label="Meta (via Groq)">
             <option value="groq-llama">Llama 3.3 70B</option>
+          </optgroup>
+          <optgroup label="MiniMax">
+            <option value="minimax-text">MiniMax-Text-01</option>
+            <option value="minimax-m1">MiniMax-M1</option>
+          </optgroup>
+          <optgroup label="Moonshot (Kimi)">
+            <option value="kimi-k2">Kimi K2</option>
+            <option value="kimi-moonshot">Moonshot-v1-128k</option>
+          </optgroup>
+          <optgroup label="Xiaomi (MiMo)">
+            <option value="mimo-7b">MiMo-7B</option>
           </optgroup>
           <optgroup label="Cohere">
             <option value="cohere-command">Command R+</option>
@@ -613,6 +635,14 @@ export class SettingsPanel {
       'qwen-coder':        { endpoint: 'https://dashscope.aliyuncs.com/compatible-mode/v1', model: 'qwen-coder-plus' },
       // Groq (Meta Llama)
       'groq-llama':        { endpoint: 'https://api.groq.com/openai/v1',     model: 'llama-3.3-70b-versatile' },
+      // MiniMax
+      'minimax-text':      { endpoint: 'https://api.minimax.chat/v1',        model: 'MiniMax-Text-01' },
+      'minimax-m1':        { endpoint: 'https://api.minimax.chat/v1',        model: 'MiniMax-M1' },
+      // Moonshot (Kimi)
+      'kimi-k2':           { endpoint: 'https://api.moonshot.cn/v1',         model: 'kimi-k2' },
+      'kimi-moonshot':     { endpoint: 'https://api.moonshot.cn/v1',         model: 'moonshot-v1-128k' },
+      // Xiaomi (MiMo)
+      'mimo-7b':           { endpoint: 'https://api.xiaomi.com/v1',          model: 'MiMo-7B-RL' },
       // Cohere
       'cohere-command':    { endpoint: 'https://api.cohere.com/v2',          model: 'command-r-plus' },
       // Local
