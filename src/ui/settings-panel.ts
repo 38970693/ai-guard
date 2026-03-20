@@ -360,10 +360,46 @@ export class SettingsPanel {
         <label>Preset</label>
         <select id="prod-preset" class="preset-select">
           <option value="">Custom</option>
-          <option value="anthropic-claude">Anthropic Claude</option>
-          <option value="openai">OpenAI</option>
-          <option value="deepseek">DeepSeek</option>
-          <option value="ollama">Ollama (Local)</option>
+          <optgroup label="OpenAI">
+            <option value="openai-gpt4o">GPT-4o</option>
+            <option value="openai-gpt4o-mini">GPT-4o Mini</option>
+            <option value="openai-o3">o3</option>
+            <option value="openai-o4-mini">o4-mini</option>
+          </optgroup>
+          <optgroup label="Anthropic">
+            <option value="claude-opus">Claude Opus 4</option>
+            <option value="claude-sonnet">Claude Sonnet 4</option>
+            <option value="claude-haiku">Claude Haiku 3.5</option>
+          </optgroup>
+          <optgroup label="Google">
+            <option value="gemini-pro">Gemini 2.5 Pro</option>
+            <option value="gemini-flash">Gemini 2.5 Flash</option>
+          </optgroup>
+          <optgroup label="DeepSeek">
+            <option value="deepseek-v3">DeepSeek V3</option>
+            <option value="deepseek-r1">DeepSeek R1</option>
+          </optgroup>
+          <optgroup label="Mistral">
+            <option value="mistral-large">Mistral Large</option>
+            <option value="mistral-codestral">Codestral</option>
+          </optgroup>
+          <optgroup label="xAI">
+            <option value="xai-grok">Grok 3</option>
+          </optgroup>
+          <optgroup label="Alibaba">
+            <option value="qwen-max">Qwen Max</option>
+            <option value="qwen-coder">Qwen Coder</option>
+          </optgroup>
+          <optgroup label="Meta (via Groq)">
+            <option value="groq-llama">Llama 3.3 70B</option>
+          </optgroup>
+          <optgroup label="Cohere">
+            <option value="cohere-command">Command R+</option>
+          </optgroup>
+          <optgroup label="Local">
+            <option value="ollama">Ollama</option>
+            <option value="lmstudio">LM Studio</option>
+          </optgroup>
         </select>
       </div>
       <div class="field">
@@ -407,10 +443,46 @@ export class SettingsPanel {
         <label>Preset</label>
         <select id="review-preset" class="preset-select">
           <option value="">Custom</option>
-          <option value="anthropic-claude">Anthropic Claude</option>
-          <option value="openai">OpenAI</option>
-          <option value="deepseek">DeepSeek</option>
-          <option value="ollama">Ollama (Local)</option>
+          <optgroup label="OpenAI">
+            <option value="openai-gpt4o">GPT-4o</option>
+            <option value="openai-gpt4o-mini">GPT-4o Mini</option>
+            <option value="openai-o3">o3</option>
+            <option value="openai-o4-mini">o4-mini</option>
+          </optgroup>
+          <optgroup label="Anthropic">
+            <option value="claude-opus">Claude Opus 4</option>
+            <option value="claude-sonnet">Claude Sonnet 4</option>
+            <option value="claude-haiku">Claude Haiku 3.5</option>
+          </optgroup>
+          <optgroup label="Google">
+            <option value="gemini-pro">Gemini 2.5 Pro</option>
+            <option value="gemini-flash">Gemini 2.5 Flash</option>
+          </optgroup>
+          <optgroup label="DeepSeek">
+            <option value="deepseek-v3">DeepSeek V3</option>
+            <option value="deepseek-r1">DeepSeek R1</option>
+          </optgroup>
+          <optgroup label="Mistral">
+            <option value="mistral-large">Mistral Large</option>
+            <option value="mistral-codestral">Codestral</option>
+          </optgroup>
+          <optgroup label="xAI">
+            <option value="xai-grok">Grok 3</option>
+          </optgroup>
+          <optgroup label="Alibaba">
+            <option value="qwen-max">Qwen Max</option>
+            <option value="qwen-coder">Qwen Coder</option>
+          </optgroup>
+          <optgroup label="Meta (via Groq)">
+            <option value="groq-llama">Llama 3.3 70B</option>
+          </optgroup>
+          <optgroup label="Cohere">
+            <option value="cohere-command">Command R+</option>
+          </optgroup>
+          <optgroup label="Local">
+            <option value="ollama">Ollama</option>
+            <option value="lmstudio">LM Studio</option>
+          </optgroup>
         </select>
       </div>
       <div class="field">
@@ -516,10 +588,36 @@ export class SettingsPanel {
 
     // Preset definitions
     const PRESETS = {
-      'anthropic-claude': { endpoint: 'https://api.anthropic.com/v1', model: 'claude-sonnet-4-20250514' },
-      'openai':           { endpoint: 'https://api.openai.com/v1',    model: 'gpt-4o' },
-      'deepseek':         { endpoint: 'https://api.deepseek.com/v1',  model: 'deepseek-chat' },
-      'ollama':           { endpoint: 'http://localhost:11434/v1',     model: 'llama3' },
+      // OpenAI
+      'openai-gpt4o':      { endpoint: 'https://api.openai.com/v1',          model: 'gpt-4o' },
+      'openai-gpt4o-mini': { endpoint: 'https://api.openai.com/v1',          model: 'gpt-4o-mini' },
+      'openai-o3':         { endpoint: 'https://api.openai.com/v1',          model: 'o3' },
+      'openai-o4-mini':    { endpoint: 'https://api.openai.com/v1',          model: 'o4-mini' },
+      // Anthropic
+      'claude-opus':       { endpoint: 'https://api.anthropic.com/v1',       model: 'claude-opus-4-20250514' },
+      'claude-sonnet':     { endpoint: 'https://api.anthropic.com/v1',       model: 'claude-sonnet-4-20250514' },
+      'claude-haiku':      { endpoint: 'https://api.anthropic.com/v1',       model: 'claude-haiku-3-5-20241022' },
+      // Google
+      'gemini-pro':        { endpoint: 'https://generativelanguage.googleapis.com/v1beta/openai',  model: 'gemini-2.5-pro' },
+      'gemini-flash':      { endpoint: 'https://generativelanguage.googleapis.com/v1beta/openai',  model: 'gemini-2.5-flash' },
+      // DeepSeek
+      'deepseek-v3':       { endpoint: 'https://api.deepseek.com/v1',        model: 'deepseek-chat' },
+      'deepseek-r1':       { endpoint: 'https://api.deepseek.com/v1',        model: 'deepseek-reasoner' },
+      // Mistral
+      'mistral-large':     { endpoint: 'https://api.mistral.ai/v1',          model: 'mistral-large-latest' },
+      'mistral-codestral': { endpoint: 'https://api.mistral.ai/v1',          model: 'codestral-latest' },
+      // xAI
+      'xai-grok':          { endpoint: 'https://api.x.ai/v1',               model: 'grok-3' },
+      // Alibaba Qwen
+      'qwen-max':          { endpoint: 'https://dashscope.aliyuncs.com/compatible-mode/v1', model: 'qwen-max' },
+      'qwen-coder':        { endpoint: 'https://dashscope.aliyuncs.com/compatible-mode/v1', model: 'qwen-coder-plus' },
+      // Groq (Meta Llama)
+      'groq-llama':        { endpoint: 'https://api.groq.com/openai/v1',     model: 'llama-3.3-70b-versatile' },
+      // Cohere
+      'cohere-command':    { endpoint: 'https://api.cohere.com/v2',          model: 'command-r-plus' },
+      // Local
+      'ollama':            { endpoint: 'http://localhost:11434/v1',           model: 'llama3' },
+      'lmstudio':          { endpoint: 'http://localhost:1234/v1',            model: 'loaded-model' },
     };
 
     function $(id) { return document.getElementById(id); }
